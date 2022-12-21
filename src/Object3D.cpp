@@ -30,16 +30,10 @@ void Object3D::Create(b2World* world, std::unique_ptr<Model> modelMesh, glm::vec
     Box2D_Vec2_Arr vertices;
     LoadBox2DVertices("../../res/extra/odessa_export_box2d_object.obj", &vertices);
 
-    //b2Vec2 arr[4];
-    //arr[0].Set(0.0f, 0.0f);
-    //arr[1].Set(1.0f, 0.0f);
-    //arr[2].Set(1.0f, 1.0f);
-    //arr[3].Set(0.0f, 1.0f);
-
-    cPolygon.Set(vertices.arr, vertices.size);
-    cFixtureDef.shape = &cPolygon;
-    cFixtureDef.friction = 0.3f;
-    pPhysicsBody->CreateFixture(&cFixtureDef);
+    //cPolygon.Set(vertices.arr, vertices.size);
+    //cFixtureDef.shape = &cPolygon;
+    //cFixtureDef.friction = 0.3f;
+    //pPhysicsBody->CreateFixture(&cFixtureDef);
 
     m_pModelMesh = std::move(modelMesh);
     vPos = pos;
@@ -77,22 +71,57 @@ void Object3D::LoadBox2DVertices(const char* path, Box2D_Vec2_Arr* vertices)
     std::stringstream ss;
     std::string line;
 
+    std::vector<std::vector<float>> vertex_data;
     while (std::getline(file, line))
     {
-        std::cout << line << "NEWLINE" << std::endl;
+        // Skip ahead to the vertex data
+        if (line[0] != 'v')
+            continue;
+
+        std::stringstream ss(line);
+        std::string token;
+
+        std::vector<float> xy;
+
+        int i = 0;
+        bool is_vertex = false;
+        while (ss >> token)
+        {
+            // Set flag to 'true' if vertex found
+            if (token == "v")
+            {
+                is_vertex = true;
+                continue;
+            }
+            else if (!is_vertex)
+                break;
+
+            if (i >= 2)
+            {
+                is_vertex = false;
+                break;
+            }
+
+            if (is_vertex)
+            {
+                xy.push_back(std::stof(token));
+                i++;
+            }
+        }
+
+        if (xy.size() > 0)
+            vertex_data.push_back(xy);
     }
 
     file.close();
 
-    //b2Vec2 arr[4];
-    b2Vec2 v0(0.0f, 0.0f);
-    b2Vec2 v1(0.0f, 1.0f);
-    b2Vec2 v2(1.0f, 1.0f);
-    b2Vec2 v3(1.0f, 0.0f);
-
-    b2Vec2 arr[4] = { v0, v1, v2, v3 };
+    // Convert to C-style array
+    vertices->size = vertex_data.size();
+    b2Vec2 arr[vertices->size];
+    for (int i = 0; i < vertices->size; i++)
+    {
+        arr[i] = b2Vec2(vertex_data[i][0], vertex_data[i][1]);
+    }
 
     vertices->arr = arr;
-    vertices->size = 4;
-//    std::cout << "Loading " << path << std::endl;
 }
