@@ -176,10 +176,10 @@ bool App::Construct()
 
     cCubeMesh = std::make_unique<Model>("../../res/models/cube_scifi/obj/Cube.obj");
     //cCubeMesh = std::make_unique<Model>("../../res/models/backpack/backpack.obj");
-    cCube.Create(std::move(cCubeMesh), glm::vec3(5.0f, 0.0f, 0.0f), 0.0f);
+    cCube.Create(&world, std::move(cCubeMesh), glm::vec3(5.0f, 0.0f, 0.0f), 0.0f);
 
     pOdessaMeshes = std::make_unique<Model>("../../res/models/odessa/odessa_test.obj");
-    cOdessa.Create(std::move(pOdessaMeshes), glm::vec3(0.0f), 0.0f);
+    cOdessa.Create(&world, std::move(pOdessaMeshes), glm::vec3(0.0f), 0.0f);
 
     obj = std::make_unique<Object>(glm::vec3(0.0f, 10.0f, 0.0f), &world);
     obj->SetColor(glm::vec3(0.5f, 0.3f, 0.5f));
