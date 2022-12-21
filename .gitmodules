@@ -1,0 +1,15 @@
+[submodule "external/glm"]
+	path = external/glm
+	url = git@github.com:g-truc/glm.git
+[submodule "external/glfw"]
+	path = external/glfw
+	url = git@github.com:glfw/glfw.git
+[submodule "external/imgui"]
+	path = external/imgui
+	url = git@github.com:david-c-oliveros/imgui.git
+[submodule "box2d"]
+	path = box2d
+	url = git@github.com:david-c-oliveros/box2d.git
+[submodule "external/box2d"]
+	path = external/box2d
+	url = git@github.com:david-c-oliveros/box2d.git
